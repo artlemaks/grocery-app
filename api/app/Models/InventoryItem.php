@@ -28,6 +28,9 @@ class InventoryItem extends Model
         'sealed_best_before',
         'effective_best_before',
         'status',
+        'frozen_on',
+        'frozen_days_remaining',
+        'discarded_on',
     ];
 
     /**
@@ -44,6 +47,9 @@ class InventoryItem extends Model
             'sealed_best_before' => 'date',
             'effective_best_before' => 'date',
             'is_opened' => 'boolean',
+            'frozen_on' => 'date',
+            'frozen_days_remaining' => 'integer',
+            'discarded_on' => 'date',
         ];
     }
 

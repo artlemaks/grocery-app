@@ -27,6 +27,7 @@ class Ingredient extends Model
         'shelf_life_sealed_days',
         'use_within_after_open_days',
         'requires_open_tracking',
+        'freezable',
     ];
 
     /**
@@ -37,6 +38,7 @@ class Ingredient extends Model
         return [
             'diet_class' => DietClass::class,
             'requires_open_tracking' => 'boolean',
+            'freezable' => 'boolean',
             'shelf_life_sealed_days' => 'integer',
             'use_within_after_open_days' => 'integer',
         ];

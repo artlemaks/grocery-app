@@ -7,7 +7,9 @@ use App\Http\Requests\Inventory\IndexInventoryItemRequest;
 use App\Http\Requests\Inventory\LogUsageRequest;
 use App\Http\Resources\InventoryItemResource;
 use App\Models\InventoryItem;
+use App\Services\Inventory\InventoryActionService;
 use App\Services\Inventory\InventoryDepletionService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class InventoryItemController extends Controller
@@ -35,5 +37,47 @@ class InventoryItemController extends Controller
         );
 
         return new InventoryItemResource($inventoryItem->fresh()->load('ingredient'));
+    }
+
+    public function open(InventoryItem $inventoryItem, InventoryActionService $actions): InventoryItemResource
+    {
+        $this->authorize('update', $inventoryItem);
+
+        return $this->fresh($actions->open($inventoryItem));
+    }
+
+    public function adjust(Request $request, InventoryItem $inventoryItem, InventoryActionService $actions): InventoryItemResource
+    {
+        $this->authorize('update', $inventoryItem);
+
+        $data = $request->validate(['remaining' => ['required', 'numeric', 'between:0,1']]);
+
+        return $this->fresh($actions->adjustRemaining($inventoryItem, (float) $data['remaining']));
+    }
+
+    public function freeze(InventoryItem $inventoryItem, InventoryActionService $actions): InventoryItemResource
+    {
+        $this->authorize('update', $inventoryItem);
+
+        return $this->fresh($actions->freeze($inventoryItem));
+    }
+
+    public function thaw(InventoryItem $inventoryItem, InventoryActionService $actions): InventoryItemResource
+    {
+        $this->authorize('update', $inventoryItem);
+
+        return $this->fresh($actions->thaw($inventoryItem));
+    }
+
+    public function discard(InventoryItem $inventoryItem, InventoryActionService $actions): InventoryItemResource
+    {
+        $this->authorize('update', $inventoryItem);
+
+        return $this->fresh($actions->discard($inventoryItem));
+    }
+
+    private function fresh(InventoryItem $item): InventoryItemResource
+    {
+        return new InventoryItemResource($item->fresh()->load('ingredient'));
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\IngredientController;
 use App\Http\Controllers\Web\InventoryController;
 use App\Http\Controllers\Web\PlannerController;
+use App\Http\Controllers\Web\ReconcileController;
 use App\Http\Controllers\Web\RecipeController;
 use App\Http\Controllers\Web\ShoppingController;
 use Illuminate\Support\Facades\Route;
@@ -63,4 +64,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/inventory', [InventoryController::class, 'index']);
     Route::get('/cook', [CookController::class, 'index']);
     Route::post('/cook/{inventoryItem}/usage', [CookController::class, 'logUsage']);
+
+    // Reconciliation (Phase 2): weekly flow + per-lot actions (shared by inventory + reconcile screens)
+    Route::get('/reconcile', [ReconcileController::class, 'index']);
+    Route::post('/inventory/{inventoryItem}/open', [InventoryController::class, 'open']);
+    Route::post('/inventory/{inventoryItem}/adjust', [InventoryController::class, 'adjust']);
+    Route::post('/inventory/{inventoryItem}/freeze', [InventoryController::class, 'freeze']);
+    Route::post('/inventory/{inventoryItem}/thaw', [InventoryController::class, 'thaw']);
+    Route::post('/inventory/{inventoryItem}/discard', [InventoryController::class, 'discard']);
 });

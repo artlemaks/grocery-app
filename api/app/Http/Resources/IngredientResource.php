@@ -27,6 +27,7 @@ class IngredientResource extends JsonResource
             'shelf_life_sealed_days' => $this->shelf_life_sealed_days,
             'use_within_after_open_days' => $this->use_within_after_open_days,
             'requires_open_tracking' => (bool) $this->requires_open_tracking,
+            'freezable' => (bool) $this->freezable,
         ];
     }
 }

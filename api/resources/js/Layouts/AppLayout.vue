@@ -13,6 +13,7 @@ const nav = [
     { label: 'Shopping', href: '/shopping', icon: 'M6 6h15l-1.5 9h-12zM6 6L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zM18 20a1 1 0 100-2 1 1 0 000 2z' },
     { label: 'Inventory', href: '/inventory', icon: 'M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7' },
     { label: 'Cook', href: '/cook', icon: 'M5 11a7 7 0 0114 0H5zM3 11h18M7 20h10' },
+    { label: 'Reconcile', href: '/reconcile', icon: 'M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5' },
 ];
 
 const isActive = (href) => page.url.startsWith(href);

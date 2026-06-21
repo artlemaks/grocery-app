@@ -1,13 +1,41 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import Card from '@/Components/Card.vue';
 import Pill from '@/Components/Pill.vue';
+import Button from '@/Components/Button.vue';
 
 defineProps({
     groups: { type: Array, default: () => [] },
 });
+
+const adjustSteps = [
+    { label: '¼', value: 0.25 },
+    { label: '½', value: 0.5 },
+    { label: '¾', value: 0.75 },
+    { label: 'Full', value: 1.0 },
+];
+
+function open(id) {
+    router.post('/inventory/' + id + '/open', {}, { preserveScroll: true });
+}
+
+function adjust(id, remaining) {
+    router.post('/inventory/' + id + '/adjust', { remaining }, { preserveScroll: true });
+}
+
+function freeze(id) {
+    router.post('/inventory/' + id + '/freeze', {}, { preserveScroll: true });
+}
+
+function thaw(id) {
+    router.post('/inventory/' + id + '/thaw', {}, { preserveScroll: true });
+}
+
+function discard(id) {
+    router.post('/inventory/' + id + '/discard', {}, { preserveScroll: true });
+}
 
 function capitalize(s) {
     if (!s) return '';
@@ -78,6 +106,58 @@ function isExpiring(iso) {
                                 Best before {{ formatDate(lot.effective_best_before) }}
                             </span>
                             <span v-if="lot.status" class="capitalize text-subtle">{{ lot.status }}</span>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-3 flex flex-wrap items-center gap-2">
+                            <Button
+                                v-if="lot.status === 'active' && !lot.is_opened"
+                                variant="ghost"
+                                class="!px-3 !py-1.5"
+                                @click="open(lot.id)"
+                            >
+                                Open
+                            </Button>
+
+                            <div class="inline-flex items-center gap-1 rounded-pill border border-hairline bg-card px-1 py-0.5">
+                                <span class="px-1.5 text-xs font-semibold text-label">Adjust</span>
+                                <button
+                                    v-for="step in adjustSteps"
+                                    :key="step.value"
+                                    type="button"
+                                    class="rounded-pill px-2 py-1 text-xs font-semibold text-ink transition hover:bg-paper"
+                                    @click="adjust(lot.id, step.value)"
+                                >
+                                    {{ step.label }}
+                                </button>
+                            </div>
+
+                            <Pill v-if="lot.status === 'frozen'" tone="frozen">Frozen</Pill>
+
+                            <Button
+                                v-if="lot.status === 'active'"
+                                variant="ghost"
+                                class="!px-3 !py-1.5"
+                                @click="freeze(lot.id)"
+                            >
+                                Freeze
+                            </Button>
+                            <Button
+                                v-else-if="lot.status === 'frozen'"
+                                variant="ghost"
+                                class="!px-3 !py-1.5"
+                                @click="thaw(lot.id)"
+                            >
+                                Thaw
+                            </Button>
+
+                            <Button
+                                variant="danger"
+                                class="!px-3 !py-1.5"
+                                @click="discard(lot.id)"
+                            >
+                                Discard
+                            </Button>
                         </div>
                     </li>
                 </ul>

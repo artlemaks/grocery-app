@@ -66,8 +66,13 @@ Route::prefix('v1')->group(function () {
         Route::get('shopping-lists', [ShoppingListController::class, 'index']);
         Route::get('shopping-lists/{shoppingList}', [ShoppingListController::class, 'show']);
 
-        // Inventory + usage logging
+        // Inventory + usage logging + reconciliation actions
         Route::get('inventory-items', [InventoryItemController::class, 'index']);
         Route::post('inventory-items/{inventoryItem}/usage', [InventoryItemController::class, 'usage']);
+        Route::post('inventory-items/{inventoryItem}/open', [InventoryItemController::class, 'open']);
+        Route::post('inventory-items/{inventoryItem}/adjust', [InventoryItemController::class, 'adjust']);
+        Route::post('inventory-items/{inventoryItem}/freeze', [InventoryItemController::class, 'freeze']);
+        Route::post('inventory-items/{inventoryItem}/thaw', [InventoryItemController::class, 'thaw']);
+        Route::post('inventory-items/{inventoryItem}/discard', [InventoryItemController::class, 'discard']);
     });
 });

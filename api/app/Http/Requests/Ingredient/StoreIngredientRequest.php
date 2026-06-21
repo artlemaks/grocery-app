@@ -32,6 +32,7 @@ class StoreIngredientRequest extends FormRequest
             'shelf_life_sealed_days' => ['nullable', 'integer', 'min:0'],
             'use_within_after_open_days' => ['nullable', 'integer', 'min:0'],
             'requires_open_tracking' => ['boolean'],
+            'freezable' => ['boolean'],
         ];
     }
 }
