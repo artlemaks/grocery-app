@@ -51,48 +51,50 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 1 — MVP: manual planning loop (web only, zero AI)
 
+> **Status (2026-06-21): Phase 1a (backend) complete** — the full manual-loop API is built + tested (59 tests green): ingredients, recipes (+ recursive sub-recipe expansion & cycle guard), meal planner (auto veg/non-veg split), shopping-list generation (per-member substitutes + inventory subtraction), complete→inventory, usage logging (first-use auto-open + FIFO). Business logic lives in services: `RecipeExpansionService`, `MealSplitResolver`, `ShoppingListGenerationService`, `InventoryDepletionService`, `BestBeforeCalculator`. **Phase 1b (next):** all Inertia+Vue screens. **Deferred:** recipe image upload (R2 storage), near-duplicate-name flag, server-side group-by-category, pg_trgm fuzzy search (ILIKE for now).
+
 ### Ingredient library
-- [ ] Implement ingredient CRUD endpoints with category, diet_class, and unit/pack fields (feat: recipes, ADR-0002)
-- [ ] Implement ingredient autocomplete/search endpoint (full-text + trigram) (feat: recipes)
+- [x] Implement ingredient CRUD endpoints with category, diet_class, and unit/pack fields (feat: recipes, ADR-0002)
+- [x] Implement ingredient autocomplete/search endpoint (ILIKE; full-text + trigram deferred) (feat: recipes)
 - [ ] Add ingredient dedup helper that flags near-duplicate names on create (feat: recipes)
-- [ ] Implement substitute-link endpoint to set/clear `substitute_ingredient_id` on an ingredient (feat: recipes, ADR-0002)
+- [x] Implement substitute-link endpoint to set/clear `substitute_ingredient_id` on an ingredient (feat: recipes, ADR-0002)
 - [ ] Build Inertia+Vue ingredient library screen with autocomplete and substitute pairing UI
 
 ### Recipe CRUD
-- [ ] Implement recipe CRUD endpoints with simplified recipe_ingredients (quantity_hint optional) (feat: recipes, ADR-0001)
-- [ ] Implement add/remove tags on a recipe (feat: recipes)
-- [ ] Implement sub-recipe linking via recipe_component endpoints (feat: recipes)
-- [ ] Add circular-reference guard for sub-recipe links (recursive cycle detection) (feat: recipes)
-- [ ] Implement recursive sub-recipe expansion service that flattens a recipe to base ingredients (feat: recipes)
+- [x] Implement recipe CRUD endpoints with simplified recipe_ingredients (quantity_hint optional) (feat: recipes, ADR-0001)
+- [x] Implement add/remove tags on a recipe (feat: recipes)
+- [x] Implement sub-recipe linking via recipe_component endpoints (feat: recipes)
+- [x] Add circular-reference guard for sub-recipe links (recursive cycle detection) (feat: recipes)
+- [x] Implement recursive sub-recipe expansion service that flattens a recipe to base ingredients (feat: recipes)
 - [ ] Implement recipe image upload to object storage (feat: recipes)
 - [ ] Build Inertia+Vue recipe list and recipe editor screens (ingredients, tags, sub-recipes, substitutes)
 
 ### Weekly meal planner
-- [ ] Implement meal_plan creation anchored to a week_start_date with status lifecycle (feat: meal-planning)
-- [ ] Implement meal_plan_entry CRUD assigning recipe to day + slot tag (feat: meal-planning)
-- [ ] Implement auto veg/non-veg split: mark entry `is_split` when a recipe ingredient is excluded by a member's diet (feat: meal-planning, ADR-0002)
-- [ ] Implement per-entry override to force split or shared (feat: meal-planning, ADR-0002)
-- [ ] Add "re-use last week" / duplicate-day helpers (feat: meal-planning)
+- [x] Implement meal_plan creation anchored to a week_start_date with status lifecycle (feat: meal-planning)
+- [x] Implement meal_plan_entry CRUD assigning recipe to day + slot tag (feat: meal-planning)
+- [x] Implement auto veg/non-veg split: mark entry `is_split` when a recipe ingredient is excluded by a member's diet (feat: meal-planning, ADR-0002)
+- [x] Implement per-entry override to force split or shared (feat: meal-planning, ADR-0002)
+- [x] Add "re-use last week" / duplicate-day helpers (feat: meal-planning)
 - [ ] Build Inertia+Vue weekly grid (days × slots) with tag-filtered recipe assignment and split indicators
 
 ### Shopping list generation
-- [ ] Implement shopping-list generation service: expand recipes + sub-recipes to base ingredients (feat: shopping-list)
-- [ ] Apply per-member substitutes during expansion (meat → vegetarian substitute for the excluded member) (feat: shopping-list, ADR-0002)
-- [ ] Subtract on-hand inventory and frozen items from required quantities (feat: shopping-list, feat: inventory-reconciliation)
-- [ ] Dedupe/aggregate duplicate ingredient lines and group by store category (feat: shopping-list)
-- [ ] Implement shopping_list_item check-off endpoint and manual-add line support (feat: shopping-list)
-- [ ] Add unbought-item rollover when completing a list (feat: shopping-list)
+- [x] Implement shopping-list generation service: expand recipes + sub-recipes to base ingredients (feat: shopping-list)
+- [x] Apply per-member substitutes during expansion (meat → vegetarian substitute for the excluded member) (feat: shopping-list, ADR-0002)
+- [x] Subtract on-hand inventory and frozen items from required quantities (feat: shopping-list, feat: inventory-reconciliation)
+- [ ] Dedupe/aggregate duplicate ingredient lines and group by store category (dedupe done; server-side grouping → 1b) (feat: shopping-list)
+- [x] Implement shopping_list_item check-off endpoint and manual-add line support (feat: shopping-list)
+- [x] Add unbought-item rollover when completing a list (feat: shopping-list)
 - [ ] Build Inertia+Vue shopping list screen grouped by category with check-off
 
 ### Complete shopping → inventory
-- [ ] Implement "Complete shopping" action: convert checked items into inventory_item lots at remaining = 1.0 (feat: inventory-reconciliation, ADR-0001)
-- [ ] Set sealed_best_before from purchase date + ingredient sealed shelf life on creation (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement "Complete shopping" action: convert checked items into inventory_item lots at remaining = 1.0 (feat: inventory-reconciliation, ADR-0001)
+- [x] Set sealed_best_before from purchase date + ingredient sealed shelf life on creation (feat: inventory-reconciliation, ADR-0003)
 - [ ] Build Inventory screen showing active lots by location with remaining fraction (feat: inventory-reconciliation)
 
 ### Usage logging
-- [ ] Implement usage-log endpoint with ¼ / ⅓ / ½ / ¾ / all preset amounts decrementing `remaining` (feat: inventory-reconciliation, ADR-0001)
-- [ ] Resolve the correct lot per member, respecting veg vs non-veg substitutes when depleting (feat: inventory-reconciliation, ADR-0002)
-- [ ] Auto-mark a sealed item opened and start the opened clock on first usage log (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement usage-log endpoint with ¼ / ⅓ / ½ / ¾ / all preset amounts decrementing `remaining` (feat: inventory-reconciliation, ADR-0001)
+- [~] Resolve the correct lot per member, respecting veg vs non-veg substitutes when depleting — FIFO lot resolution done in `InventoryDepletionService`; per-member variant wiring at the usage endpoint → 1b (feat: inventory-reconciliation, ADR-0002)
+- [x] Auto-mark a sealed item opened and start the opened clock on first usage log (feat: inventory-reconciliation, ADR-0003)
 - [ ] Build Inertia+Vue "log usage" UI from a planned meal entry with quick fraction taps (feat: inventory-reconciliation)
 
 ---
