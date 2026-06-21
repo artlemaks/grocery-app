@@ -51,7 +51,7 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 1 — MVP: manual planning loop (web only, zero AI)
 
-> **Status (2026-06-21): Phase 1a (backend) complete** — the full manual-loop API is built + tested (59 tests green): ingredients, recipes (+ recursive sub-recipe expansion & cycle guard), meal planner (auto veg/non-veg split), shopping-list generation (per-member substitutes + inventory subtraction), complete→inventory, usage logging (first-use auto-open + FIFO). Business logic lives in services: `RecipeExpansionService`, `MealSplitResolver`, `ShoppingListGenerationService`, `InventoryDepletionService`, `BestBeforeCalculator`. **Phase 1b-i (done 2026-06-21):** Inertia + Vue + Tailwind v4 foundation, Larder design system, session auth + seeder, Ingredient Library + Recipe editor screens (web controllers reuse the services; `/api/v1` stays the mobile contract). **Phase 1b-ii (next):** planner, shopping, inventory, usage screens. **Deferred:** recipe image upload (R2 storage), near-duplicate-name flag, server-side group-by-category, pg_trgm fuzzy search (ILIKE for now).
+> **Status (2026-06-21): Phase 1a (backend) complete** — the full manual-loop API is built + tested (59 tests green): ingredients, recipes (+ recursive sub-recipe expansion & cycle guard), meal planner (auto veg/non-veg split), shopping-list generation (per-member substitutes + inventory subtraction), complete→inventory, usage logging (first-use auto-open + FIFO). Business logic lives in services: `RecipeExpansionService`, `MealSplitResolver`, `ShoppingListGenerationService`, `InventoryDepletionService`, `BestBeforeCalculator`. **Phase 1b-i (done 2026-06-21):** Inertia + Vue + Tailwind v4 foundation, Larder design system, session auth + seeder, Ingredient Library + Recipe editor screens (web controllers reuse the services; `/api/v1` stays the mobile contract). **Phase 1b-ii (done 2026-06-21):** planner, shopping, inventory, cook screens — the **manual loop now runs end-to-end in the browser.** **Deferred:** recipe image upload (R2 storage), near-duplicate-name flag, server-side group-by-category, pg_trgm fuzzy search (ILIKE for now).
 
 ### Ingredient library
 - [x] Implement ingredient CRUD endpoints with category, diet_class, and unit/pack fields (feat: recipes, ADR-0002)
@@ -75,27 +75,27 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 - [x] Implement auto veg/non-veg split: mark entry `is_split` when a recipe ingredient is excluded by a member's diet (feat: meal-planning, ADR-0002)
 - [x] Implement per-entry override to force split or shared (feat: meal-planning, ADR-0002)
 - [x] Add "re-use last week" / duplicate-day helpers (feat: meal-planning)
-- [ ] Build Inertia+Vue weekly grid (days × slots) with tag-filtered recipe assignment and split indicators
+- [x] Build Inertia+Vue weekly grid (days × slots) with recipe assignment and split indicators (Phase 1b-ii)
 
 ### Shopping list generation
 - [x] Implement shopping-list generation service: expand recipes + sub-recipes to base ingredients (feat: shopping-list)
 - [x] Apply per-member substitutes during expansion (meat → vegetarian substitute for the excluded member) (feat: shopping-list, ADR-0002)
 - [x] Subtract on-hand inventory and frozen items from required quantities (feat: shopping-list, feat: inventory-reconciliation)
-- [ ] Dedupe/aggregate duplicate ingredient lines and group by store category (dedupe done; server-side grouping → 1b) (feat: shopping-list)
+- [x] Dedupe/aggregate duplicate ingredient lines and group by store category (Phase 1b-ii) (feat: shopping-list)
 - [x] Implement shopping_list_item check-off endpoint and manual-add line support (feat: shopping-list)
 - [x] Add unbought-item rollover when completing a list (feat: shopping-list)
-- [ ] Build Inertia+Vue shopping list screen grouped by category with check-off
+- [x] Build Inertia+Vue shopping list screen grouped by category with check-off (Phase 1b-ii)
 
 ### Complete shopping → inventory
 - [x] Implement "Complete shopping" action: convert checked items into inventory_item lots at remaining = 1.0 (feat: inventory-reconciliation, ADR-0001)
 - [x] Set sealed_best_before from purchase date + ingredient sealed shelf life on creation (feat: inventory-reconciliation, ADR-0003)
-- [ ] Build Inventory screen showing active lots by location with remaining fraction (feat: inventory-reconciliation)
+- [x] Build Inventory screen showing active lots by location with remaining fraction (Phase 1b-ii) (feat: inventory-reconciliation)
 
 ### Usage logging
 - [x] Implement usage-log endpoint with ¼ / ⅓ / ½ / ¾ / all preset amounts decrementing `remaining` (feat: inventory-reconciliation, ADR-0001)
 - [~] Resolve the correct lot per member, respecting veg vs non-veg substitutes when depleting — FIFO lot resolution done in `InventoryDepletionService`; per-member variant wiring at the usage endpoint → 1b (feat: inventory-reconciliation, ADR-0002)
 - [x] Auto-mark a sealed item opened and start the opened clock on first usage log (feat: inventory-reconciliation, ADR-0003)
-- [ ] Build Inertia+Vue "log usage" UI from a planned meal entry with quick fraction taps (feat: inventory-reconciliation)
+- [x] Build Inertia+Vue "log usage" UI (Cook screen) with quick fraction taps (Phase 1b-ii) (feat: inventory-reconciliation)
 
 ---
 
