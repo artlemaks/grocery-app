@@ -133,14 +133,16 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 3 — AI capture & suggestions
 
+> **Status (2026-06-21): Phase 3a (backend) complete.** Provider-abstracted `LlmClient` (official Anthropic SDK + deterministic fake, auto-selected by whether `ANTHROPIC_API_KEY` is set), the `AiJob` async envelope over Horizon, and two flagship jobs: URL recipe import (schema.org JSON-LD first → LLM-on-HTML fallback → **draft** recipe for review) and grounded, veg-aware meal suggestions. Honors all 3 AI indications. 70 tests green **with no API key** (FakeLlmClient). Model defaults to `claude-opus-4-8` (`AI_MODEL` to switch to Haiku for cost). **Phase 3b (next):** photo/OCR import, ingredient embedding matching, AI best-before/freeze estimation, the AI UI screens (import-from-URL, "what should we have?", thumbs up/down), and per-URL/rule caching.
+
 ### AI services foundation
-- [ ] Create an LLM client abstraction with provider config, retries, and cost logging (feat: ai-services)
-- [ ] Establish async Horizon job pattern for all AI work with result push-back to the client (feat: ai-services, ADR-0004)
+- [x] Create an LLM client abstraction with provider config (Anthropic SDK + fake); retries via SDK; cost logging → 3b (feat: ai-services)
+- [x] Establish async Horizon job pattern for all AI work via the AiJob envelope (poll for result) (feat: ai-services, ADR-0004)
 - [ ] Add a per-URL and per-rule cache layer to avoid redundant LLM calls (feat: ai-services)
 
 ### URL recipe import
-- [ ] Implement URL fetch + schema.org `Recipe` JSON-LD parser as the primary path (feat: ai-services, feat: recipes)
-- [ ] Implement LLM-on-HTML fallback when structured data is absent (feat: ai-services, feat: recipes)
+- [x] Implement URL fetch + schema.org `Recipe` JSON-LD parser as the primary path (feat: ai-services, feat: recipes)
+- [x] Implement LLM-on-HTML fallback when structured data is absent (feat: ai-services, feat: recipes)
 - [ ] Cache import results by URL and map ingredients to the existing library (feat: ai-services)
 - [ ] Build review screen landing for URL imports (never auto-saved) (feat: ai-services, feat: recipes)
 
@@ -159,8 +161,8 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 - [ ] Implement LLM-assisted freeze suggestions over best-before vs planned usage (feat: ai-services, feat: inventory-reconciliation)
 
 ### AI meal suggestions
-- [ ] Implement meal-suggestion job grounded in recipe history, tags, inventory, and diet profiles (feat: ai-services, feat: meal-planning)
-- [ ] Bias suggestions toward using existing stock and keep them veg-aware (feat: ai-services, ADR-0002)
+- [x] Implement meal-suggestion job grounded in recipe history, tags, inventory, and diet profiles (feat: ai-services, feat: meal-planning)
+- [x] Bias suggestions toward using existing stock and keep them veg-aware (feat: ai-services, ADR-0002)
 - [ ] Add thumbs up/down feedback capture to tune suggestions (feat: ai-services)
 - [ ] Build Inertia+Vue "what should we have?" suggestion UI per slot (feat: ai-services, feat: meal-planning)
 
