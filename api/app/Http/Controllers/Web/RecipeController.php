@@ -37,8 +37,21 @@ class RecipeController extends Controller
                 'servings_default' => $r->servings_default,
                 'tags' => TagResource::collection($r->tags)->resolve(),
                 'ingredient_count' => $r->recipe_ingredients_count,
+                'is_draft' => $r->is_draft,
             ]),
         ]);
+    }
+
+    /**
+     * Confirm an AI-imported draft after review (indication: ai-imports-need-review-screen).
+     */
+    public function confirm(Recipe $recipe): RedirectResponse
+    {
+        $this->authorize('update', $recipe);
+
+        $recipe->update(['is_draft' => false]);
+
+        return back()->with('success', 'Recipe confirmed.');
     }
 
     public function store(StoreRecipeRequest $request): RedirectResponse
@@ -63,6 +76,7 @@ class RecipeController extends Controller
                 'servings_default' => $recipe->servings_default,
                 'instructions' => $recipe->instructions,
                 'source_type' => $recipe->source_type->value,
+                'is_draft' => $recipe->is_draft,
             ],
             'lines' => $recipe->recipeIngredients->map(fn ($ri) => [
                 'id' => $ri->id,

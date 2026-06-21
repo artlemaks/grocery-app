@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\AiController;
 use App\Http\Controllers\Web\Auth\LoginController;
 use App\Http\Controllers\Web\CookController;
 use App\Http\Controllers\Web\DashboardController;
@@ -38,6 +39,9 @@ Route::middleware('auth')->group(function () {
     // Recipes + editor
     Route::get('/recipes', [RecipeController::class, 'index']);
     Route::post('/recipes', [RecipeController::class, 'store']);
+    // AI capture (Phase 3b): import a recipe from a URL → draft; confirm passes review.
+    Route::post('/recipes/import-url', [AiController::class, 'importRecipeUrl']);
+    Route::post('/recipes/{recipe}/confirm', [RecipeController::class, 'confirm']);
     Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit']);
     Route::put('/recipes/{recipe}', [RecipeController::class, 'update']);
     Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy']);
@@ -53,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/planner/{mealPlan}/entries', [PlannerController::class, 'storeEntry']);
     Route::delete('/planner/{mealPlan}/entries/{entry}', [PlannerController::class, 'destroyEntry']);
     Route::post('/planner/{mealPlan}/generate', [PlannerController::class, 'generate']);
+    Route::post('/planner/{mealPlan}/suggest', [AiController::class, 'suggestMeals']);
 
     // Shopping list
     Route::get('/shopping', [ShoppingController::class, 'index']);
@@ -72,4 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/inventory/{inventoryItem}/freeze', [InventoryController::class, 'freeze']);
     Route::post('/inventory/{inventoryItem}/thaw', [InventoryController::class, 'thaw']);
     Route::post('/inventory/{inventoryItem}/discard', [InventoryController::class, 'discard']);
+
+    // AI job polling (Phase 3b) — the Vue pages poll this until an enqueued AI job completes.
+    Route::get('/ai-jobs/{aiJob}', [AiController::class, 'show']);
 });

@@ -109,6 +109,11 @@ function removeComponent(child) {
         preserveScroll: true,
     });
 }
+
+// --- AI draft review ---
+function confirmDraft() {
+    router.post('/recipes/' + props.recipe.id + '/confirm', {}, { preserveScroll: true });
+}
 </script>
 
 <template>
@@ -121,6 +126,17 @@ function removeComponent(child) {
                 </Link>
             </template>
         </PageHeader>
+
+        <!-- AI draft: needs review before it counts as a real recipe -->
+        <Card v-if="recipe.is_draft" class="mb-6 border-terracotta/40 bg-paper">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <div class="font-semibold text-ink">✨ Imported draft — review before saving</div>
+                    <p class="text-sm text-muted">Check the ingredients and steps, then confirm to add it to your recipes.</p>
+                </div>
+                <Button variant="primary" @click="confirmDraft">Confirm recipe</Button>
+            </div>
+        </Card>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- Details -->

@@ -1,6 +1,7 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { Head, router, usePage } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
+import { pollAiJob } from '@/composables/useAiJob';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import Card from '@/Components/Card.vue';
@@ -63,6 +64,36 @@ function addEntry(slot, day) {
 function removeEntry(entry) {
     router.delete('/planner/' + props.plan.id + '/entries/' + entry.id, { preserveScroll: true });
 }
+
+// --- AI meal suggestions ---
+const suggestions = ref([]);
+const suggesting = ref(false);
+const suggestError = ref('');
+
+function suggest() {
+    suggestError.value = '';
+    suggestions.value = [];
+    router.post('/planner/' + props.plan.id + '/suggest', {}, { preserveScroll: true });
+}
+
+const page = usePage();
+watch(
+    () => page.props.flash?.aiJob,
+    (job) => {
+        if (!job || job.kind !== 'suggest') return;
+        suggesting.value = true;
+        pollAiJob(job.id)
+            .then((data) => {
+                suggesting.value = false;
+                suggestions.value = data.result?.suggestions ?? [];
+            })
+            .catch((e) => {
+                suggesting.value = false;
+                suggestError.value = e.message;
+            });
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
@@ -70,9 +101,32 @@ function removeEntry(entry) {
     <AppLayout>
         <PageHeader title="Weekly Planner" :subtitle="'Week of ' + plan.week_start_date">
             <template #actions>
+                <Button variant="ghost" :disabled="suggesting" @click="suggest">
+                    {{ suggesting ? 'Thinking…' : '✨ What should we have?' }}
+                </Button>
                 <Button @click="generate">Generate shopping list</Button>
             </template>
         </PageHeader>
+
+        <!-- AI suggestions -->
+        <Card v-if="suggestions.length || suggesting || suggestError" class="mb-6">
+            <div class="mb-3 font-serif text-lg font-semibold text-ink">✨ Suggestions</div>
+            <p v-if="suggesting" class="text-sm text-muted">Thinking about what to cook, using what you have…</p>
+            <p v-else-if="suggestError" class="text-sm text-meat">{{ suggestError }}</p>
+            <ul v-else class="space-y-2">
+                <li
+                    v-for="(s, i) in suggestions"
+                    :key="i"
+                    class="flex items-start gap-3 rounded-card border border-hairline bg-paper p-3"
+                >
+                    <Pill :tone="s.uses_stock ? 'veg' : 'neutral'">{{ s.uses_stock ? 'uses stock' : 'shop' }}</Pill>
+                    <div>
+                        <div class="font-semibold text-ink">{{ s.recipe_name }}</div>
+                        <div class="text-sm text-muted">{{ s.reason }}</div>
+                    </div>
+                </li>
+            </ul>
+        </Card>
 
         <Card :padded="false">
             <div class="overflow-x-auto">
