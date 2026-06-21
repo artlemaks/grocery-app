@@ -101,31 +101,33 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 2 — Reconciliation & waste reduction
 
+> **Status (2026-06-21): Phase 2 complete.** `InventoryActionService` (open / adjust / freeze / thaw / discard) implements the ADR-0003 clock pause-and-resume (freeze snapshots the remaining shelf + extends; thaw resumes + restarts the opened window). Action endpoints on `/api/v1` + web; the inventory screen gained per-lot actions; a new **Reconcile** screen runs the weekly flow (confirm stock → expiring flags → rules-based freeze suggestions → discard pass, nothing auto-removed). 65 tests green. **Simplification:** freezability is a per-ingredient `freezable` flag (default true), not a per-category hint table. Several two-clock items were already delivered in Phase 1a.
+
 ### Weekly stock-confirm
-- [ ] Implement stock-confirm flow endpoint that surfaces current inventory for fraction adjustment (feat: inventory-reconciliation)
-- [ ] Add "mark opened since last week" step within the confirm flow (feat: inventory-reconciliation, ADR-0003)
-- [ ] Build Inertia+Vue weekly stock-confirm screen as a fast two-tap correction (feat: inventory-reconciliation)
+- [x] Implement stock-confirm flow endpoint that surfaces current inventory for fraction adjustment (feat: inventory-reconciliation)
+- [x] Add "mark opened since last week" step within the confirm flow (feat: inventory-reconciliation, ADR-0003)
+- [x] Build Inertia+Vue weekly stock-confirm screen as a fast two-tap correction (feat: inventory-reconciliation)
 
 ### Two-clock best-before
-- [ ] Implement effective_best_before computation = earlier of (sealed) and (opened_on + use_within_after_open) (feat: inventory-reconciliation, ADR-0003)
-- [ ] Recompute effective_best_before on open/edit and persist it (feat: inventory-reconciliation, ADR-0003)
-- [ ] Implement FIFO depletion ordering by effective_best_before when multiple lots exist (feat: inventory-reconciliation, ADR-0003)
-- [ ] Surface expiring-soon flags in inventory and planning views (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement effective_best_before computation = earlier of (sealed) and (opened_on + use_within_after_open) (Phase 1a) (feat: inventory-reconciliation, ADR-0003)
+- [x] Recompute effective_best_before on open/edit and persist it (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement FIFO depletion ordering by effective_best_before when multiple lots exist (Phase 1a) (feat: inventory-reconciliation, ADR-0003)
+- [x] Surface expiring-soon flags in inventory and planning views (feat: inventory-reconciliation, ADR-0003)
 
 ### Freeze / thaw
-- [ ] Implement freeze action: status active → frozen, pause both clocks, extend effective_best_before (feat: inventory-reconciliation, ADR-0003)
-- [ ] Implement thaw action: restart the opened window on un-freeze (feat: inventory-reconciliation, ADR-0003)
-- [ ] Implement rules-based freeze suggestions for items likely to spoil before use (feat: inventory-reconciliation)
-- [ ] Maintain a per-category freezability hint table (feat: inventory-reconciliation)
+- [x] Implement freeze action: status active → frozen, pause both clocks, extend effective_best_before (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement thaw action: restart the opened window on un-freeze (feat: inventory-reconciliation, ADR-0003)
+- [x] Implement rules-based freeze suggestions for items likely to spoil before use (feat: inventory-reconciliation)
+- [ ] Maintain a per-category freezability hint table — _simplified to a per-ingredient `freezable` flag for now_ (feat: inventory-reconciliation)
 
 ### Discard pass
-- [ ] Implement throw-away surfacing: list items past effective_best_before as "worth checking" (nothing auto-discarded) (feat: inventory-reconciliation)
-- [ ] Implement user-driven discard action that sets status = discarded and logs the discard (feat: inventory-reconciliation)
-- [ ] Build Inertia+Vue reconciliation screen combining stock-confirm, expiry flags, freeze prompts, and discard pass (feat: inventory-reconciliation)
+- [x] Implement throw-away surfacing: list items past effective_best_before as "worth checking" (nothing auto-discarded) (feat: inventory-reconciliation)
+- [x] Implement user-driven discard action that sets status = discarded and logs the discard (feat: inventory-reconciliation)
+- [x] Build Inertia+Vue reconciliation screen combining stock-confirm, expiry flags, freeze prompts, and discard pass (feat: inventory-reconciliation)
 
 ### Inventory-aware shopping
-- [ ] Extend shopping-list generation to include the frozen pool as available stock (feat: shopping-list, feat: inventory-reconciliation)
-- [ ] Verify new meal plan + shopping list are built around remaining + frozen stock (feat: shopping-list)
+- [x] Extend shopping-list generation to include the frozen pool as available stock (Phase 1a) (feat: shopping-list, feat: inventory-reconciliation)
+- [x] Verify new meal plan + shopping list are built around remaining + frozen stock (Phase 1a) (feat: shopping-list)
 
 ---
 
