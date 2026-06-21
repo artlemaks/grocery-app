@@ -51,14 +51,14 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 1 — MVP: manual planning loop (web only, zero AI)
 
-> **Status (2026-06-21): Phase 1a (backend) complete** — the full manual-loop API is built + tested (59 tests green): ingredients, recipes (+ recursive sub-recipe expansion & cycle guard), meal planner (auto veg/non-veg split), shopping-list generation (per-member substitutes + inventory subtraction), complete→inventory, usage logging (first-use auto-open + FIFO). Business logic lives in services: `RecipeExpansionService`, `MealSplitResolver`, `ShoppingListGenerationService`, `InventoryDepletionService`, `BestBeforeCalculator`. **Phase 1b (next):** all Inertia+Vue screens. **Deferred:** recipe image upload (R2 storage), near-duplicate-name flag, server-side group-by-category, pg_trgm fuzzy search (ILIKE for now).
+> **Status (2026-06-21): Phase 1a (backend) complete** — the full manual-loop API is built + tested (59 tests green): ingredients, recipes (+ recursive sub-recipe expansion & cycle guard), meal planner (auto veg/non-veg split), shopping-list generation (per-member substitutes + inventory subtraction), complete→inventory, usage logging (first-use auto-open + FIFO). Business logic lives in services: `RecipeExpansionService`, `MealSplitResolver`, `ShoppingListGenerationService`, `InventoryDepletionService`, `BestBeforeCalculator`. **Phase 1b-i (done 2026-06-21):** Inertia + Vue + Tailwind v4 foundation, Larder design system, session auth + seeder, Ingredient Library + Recipe editor screens (web controllers reuse the services; `/api/v1` stays the mobile contract). **Phase 1b-ii (next):** planner, shopping, inventory, usage screens. **Deferred:** recipe image upload (R2 storage), near-duplicate-name flag, server-side group-by-category, pg_trgm fuzzy search (ILIKE for now).
 
 ### Ingredient library
 - [x] Implement ingredient CRUD endpoints with category, diet_class, and unit/pack fields (feat: recipes, ADR-0002)
 - [x] Implement ingredient autocomplete/search endpoint (ILIKE; full-text + trigram deferred) (feat: recipes)
 - [ ] Add ingredient dedup helper that flags near-duplicate names on create (feat: recipes)
 - [x] Implement substitute-link endpoint to set/clear `substitute_ingredient_id` on an ingredient (feat: recipes, ADR-0002)
-- [ ] Build Inertia+Vue ingredient library screen with autocomplete and substitute pairing UI
+- [x] Build Inertia+Vue ingredient library screen with substitute pairing UI (Phase 1b-i)
 
 ### Recipe CRUD
 - [x] Implement recipe CRUD endpoints with simplified recipe_ingredients (quantity_hint optional) (feat: recipes, ADR-0001)
@@ -67,7 +67,7 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 - [x] Add circular-reference guard for sub-recipe links (recursive cycle detection) (feat: recipes)
 - [x] Implement recursive sub-recipe expansion service that flattens a recipe to base ingredients (feat: recipes)
 - [ ] Implement recipe image upload to object storage (feat: recipes)
-- [ ] Build Inertia+Vue recipe list and recipe editor screens (ingredients, tags, sub-recipes, substitutes)
+- [x] Build Inertia+Vue recipe list and recipe editor screens (ingredients, tags, sub-recipes, substitutes) (Phase 1b-i)
 
 ### Weekly meal planner
 - [x] Implement meal_plan creation anchored to a week_start_date with status lifecycle (feat: meal-planning)
