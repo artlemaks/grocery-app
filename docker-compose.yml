@@ -1,0 +1,56 @@
+# Larder — local development stack.
+#
+# After the stack is up, run the migrations to set up the schema:
+#   docker compose run --rm app php artisan migrate
+
+services:
+  app:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/var/www/html
+    env_file:
+      - ./api/.env
+    depends_on:
+      - postgres
+      - redis
+
+  horizon:
+    build:
+      context: ./api
+    command: php artisan horizon
+    volumes:
+      - ./api:/var/www/html
+    env_file:
+      - ./api/.env
+    depends_on:
+      - redis
+      - postgres
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: larder
+      POSTGRES_USER: larder
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      # Host port 55432 to avoid clashing with a Postgres already on the host's 5432.
+      # The app/horizon containers reach Postgres over the internal network on 5432.
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U larder"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
