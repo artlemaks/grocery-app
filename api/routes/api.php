@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AiController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\IngredientController;
 use App\Http\Controllers\Api\V1\InventoryItemController;
@@ -48,6 +49,9 @@ Route::prefix('v1')->group(function () {
         Route::delete('recipes/{recipe}/tags/{tag}', [RecipeTagController::class, 'detachTag']);
         Route::post('recipes/{recipe}/components', [RecipeComponentController::class, 'store']);
         Route::delete('recipes/{recipe}/components/{child}', [RecipeComponentController::class, 'destroy'])->whereNumber('child');
+        // AI capture (Phase 3): URL import enqueues a draft; confirm passes review.
+        Route::post('recipes/import/url', [AiController::class, 'importRecipeUrl']);
+        Route::post('recipes/{recipe}/confirm', [RecipeController::class, 'confirm']);
         Route::apiResource('recipes', RecipeController::class);
 
         // Meal plans (+ entries, duplicate, shopping-list generation)
@@ -74,5 +78,9 @@ Route::prefix('v1')->group(function () {
         Route::post('inventory-items/{inventoryItem}/freeze', [InventoryItemController::class, 'freeze']);
         Route::post('inventory-items/{inventoryItem}/thaw', [InventoryItemController::class, 'thaw']);
         Route::post('inventory-items/{inventoryItem}/discard', [InventoryItemController::class, 'discard']);
+
+        // AI suggestions + job polling (Phase 3)
+        Route::post('meal-plans/{mealPlan}/suggest', [AiController::class, 'suggestMeals']);
+        Route::get('ai-jobs/{aiJob}', [AiController::class, 'show']);
     });
 });

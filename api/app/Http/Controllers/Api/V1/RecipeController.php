@@ -16,6 +16,19 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RecipeController extends Controller
 {
+    /**
+     * Confirm an AI-imported draft recipe after the mandatory review (indication:
+     * ai-imports-need-review-screen) — flips it from draft to a real saved recipe.
+     */
+    public function confirm(Recipe $recipe): RecipeResource
+    {
+        $this->authorize('update', $recipe);
+
+        $recipe->update(['is_draft' => false]);
+
+        return new RecipeResource($recipe->load(['recipeIngredients.ingredient', 'tags']));
+    }
+
     public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Recipe::class);

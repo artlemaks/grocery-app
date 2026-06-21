@@ -24,6 +24,7 @@ class Recipe extends Model
         'source_type',
         'source_url',
         'image_url',
+        'is_draft',
     ];
 
     /**
@@ -34,6 +35,7 @@ class Recipe extends Model
         return [
             'source_type' => RecipeSourceType::class,
             'servings_default' => 'integer',
+            'is_draft' => 'boolean',
         ];
     }
 
