@@ -133,7 +133,7 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 3 — AI capture & suggestions
 
-> **Status (2026-06-21): Phase 3a (backend) complete.** Provider-abstracted `LlmClient` (official Anthropic SDK + deterministic fake, auto-selected by whether `ANTHROPIC_API_KEY` is set), the `AiJob` async envelope over Horizon, and two flagship jobs: URL recipe import (schema.org JSON-LD first → LLM-on-HTML fallback → **draft** recipe for review) and grounded, veg-aware meal suggestions. Honors all 3 AI indications. 70 tests green **with no API key** (FakeLlmClient). Model defaults to `claude-opus-4-8` (`AI_MODEL` to switch to Haiku for cost). **Phase 3b (next):** photo/OCR import, ingredient embedding matching, AI best-before/freeze estimation, the AI UI screens (import-from-URL, "what should we have?", thumbs up/down), and per-URL/rule caching.
+> **Status (2026-06-21): Phase 3a (backend) complete.** Provider-abstracted `LlmClient` (official Anthropic SDK + deterministic fake, auto-selected by whether `ANTHROPIC_API_KEY` is set), the `AiJob` async envelope over Horizon, and two flagship jobs: URL recipe import (schema.org JSON-LD first → LLM-on-HTML fallback → **draft** recipe for review) and grounded, veg-aware meal suggestions. Honors all 3 AI indications. 70 tests green **with no API key** (FakeLlmClient). Model defaults to `claude-opus-4-8` (`AI_MODEL` to switch to Haiku for cost). **Phase 3b-UI (done 2026-06-21):** AI is now clickable in the app — "Import from URL" on Recipes (→ poll → draft for review, with a confirm banner) and "What should we have?" on the Planner (suggestions panel). **Still deferred:** photo/OCR import, ingredient embedding matching, AI best-before/freeze estimation, thumbs up/down feedback, and per-URL/rule caching.
 
 ### AI services foundation
 - [x] Create an LLM client abstraction with provider config (Anthropic SDK + fake); retries via SDK; cost logging → 3b (feat: ai-services)
@@ -144,7 +144,7 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 - [x] Implement URL fetch + schema.org `Recipe` JSON-LD parser as the primary path (feat: ai-services, feat: recipes)
 - [x] Implement LLM-on-HTML fallback when structured data is absent (feat: ai-services, feat: recipes)
 - [ ] Cache import results by URL and map ingredients to the existing library (feat: ai-services)
-- [ ] Build review screen landing for URL imports (never auto-saved) (feat: ai-services, feat: recipes)
+- [x] Build review screen landing for URL imports (draft badge + editor confirm banner) (Phase 3b-UI) (feat: ai-services, feat: recipes)
 
 ### Photo / OCR import
 - [ ] Implement photo upload → OCR / vision extraction job (feat: ai-services, feat: recipes)
@@ -164,7 +164,7 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 - [x] Implement meal-suggestion job grounded in recipe history, tags, inventory, and diet profiles (feat: ai-services, feat: meal-planning)
 - [x] Bias suggestions toward using existing stock and keep them veg-aware (feat: ai-services, ADR-0002)
 - [ ] Add thumbs up/down feedback capture to tune suggestions (feat: ai-services)
-- [ ] Build Inertia+Vue "what should we have?" suggestion UI per slot (feat: ai-services, feat: meal-planning)
+- [x] Build Inertia+Vue "what should we have?" suggestion UI (planner panel) (Phase 3b-UI) (feat: ai-services, feat: meal-planning)
 
 ---
 
