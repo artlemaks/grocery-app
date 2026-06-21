@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Enums\InventoryLocation;
 use App\Enums\InventoryStatus;
 use App\Models\Concerns\BelongsToHousehold;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class InventoryItem extends Model
 {
-    use BelongsToHousehold;
+    use BelongsToHousehold, HasFactory;
 
     /**
      * @var list<string>

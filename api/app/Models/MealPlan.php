@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Enums\MealPlanStatus;
 use App\Models\Concerns\BelongsToHousehold;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MealPlan extends Model
 {
-    use BelongsToHousehold;
+    use BelongsToHousehold, HasFactory;
 
     /**
      * @var list<string>
