@@ -2,8 +2,51 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source './**/*.vue';
 
+/*
+ | Larder design tokens — extracted from design/tokens.md (the Larder.dc.html style tile).
+ | These generate Tailwind utilities (bg-canvas, text-ink, text-muted, bg-terracotta,
+ | rounded-card, font-serif, …).
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Hanken Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Spectral', ui-serif, Georgia, serif;
+
+    /* surfaces & text */
+    --color-canvas: #e4ddcf;
+    --color-paper: #f4efe6;
+    --color-card: #fbf8f2;
+    --color-hairline: #e8dfd0;
+    --color-ink: #292320;
+    --color-muted: #6b5f54;
+    --color-subtle: #8a7c6d;
+    --color-label: #a8997f;
+
+    /* brand & semantic */
+    --color-terracotta: #bc5b3c;
+    --color-veg: #4f7a55;
+    --color-meat: #9e4b36;
+    --color-freezer: #5b7e8c;
+    --color-bestbefore: #d08c3a;
+
+    /* status pill fills */
+    --color-veg-soft: #e7f0e4;
+    --color-veg-strong: #3f6645;
+    --color-meat-soft: #f3e2dc;
+    --color-meat-strong: #8a3a28;
+    --color-frozen-soft: #e2eaee;
+    --color-frozen-strong: #436370;
+
+    --radius-card: 14px;
+    --radius-pill: 9999px;
+}
+
+::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbbfa9;
+    border-radius: 8px;
 }
