@@ -12,6 +12,7 @@ const nav = [
     { label: 'Planner', href: '/planner', icon: 'M4 5h16v16H4zM4 9h16M9 5v16' },
     { label: 'Shopping', href: '/shopping', icon: 'M6 6h15l-1.5 9h-12zM6 6L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zM18 20a1 1 0 100-2 1 1 0 000 2z' },
     { label: 'Inventory', href: '/inventory', icon: 'M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7' },
+    { label: 'Cook', href: '/cook', icon: 'M5 11a7 7 0 0114 0H5zM3 11h18M7 20h10' },
 ];
 
 const isActive = (href) => page.url.startsWith(href);

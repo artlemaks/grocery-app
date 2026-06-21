@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\CookController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\IngredientController;
+use App\Http\Controllers\Web\InventoryController;
+use App\Http\Controllers\Web\PlannerController;
 use App\Http\Controllers\Web\RecipeController;
+use App\Http\Controllers\Web\ShoppingController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 | Larder web (Inertia + Vue). Phase 1b-i: auth, dashboard, ingredients, recipes.
@@ -44,8 +47,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/recipes/{recipe}/components', [RecipeController::class, 'addComponent']);
     Route::delete('/recipes/{recipe}/components/{child}', [RecipeController::class, 'removeComponent'])->whereNumber('child');
 
-    // Phase 1b-ii placeholders (keep the sidebar nav links live).
-    Route::get('/planner', fn () => Inertia::render('ComingSoon', ['title' => 'Weekly Planner']));
-    Route::get('/shopping', fn () => Inertia::render('ComingSoon', ['title' => 'Shopping List']));
-    Route::get('/inventory', fn () => Inertia::render('ComingSoon', ['title' => 'Inventory']));
+    // Weekly planner
+    Route::get('/planner', [PlannerController::class, 'index']);
+    Route::post('/planner/{mealPlan}/entries', [PlannerController::class, 'storeEntry']);
+    Route::delete('/planner/{mealPlan}/entries/{entry}', [PlannerController::class, 'destroyEntry']);
+    Route::post('/planner/{mealPlan}/generate', [PlannerController::class, 'generate']);
+
+    // Shopping list
+    Route::get('/shopping', [ShoppingController::class, 'index']);
+    Route::post('/shopping/{shoppingList}/items', [ShoppingController::class, 'addItem']);
+    Route::put('/shopping/{shoppingList}/items/{item}', [ShoppingController::class, 'toggleItem']);
+    Route::post('/shopping/{shoppingList}/complete', [ShoppingController::class, 'complete']);
+
+    // Inventory + cook (usage logging)
+    Route::get('/inventory', [InventoryController::class, 'index']);
+    Route::get('/cook', [CookController::class, 'index']);
+    Route::post('/cook/{inventoryItem}/usage', [CookController::class, 'logUsage']);
 });
