@@ -186,7 +186,9 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ---
 
-## Open decisions
+## Resolved decisions
 
-- [ ] **Web framework:** Inertia + Vue (recommended for v1) vs decoupled Nuxt SSR for a fully symmetric/independent web surface (§8.4)
-- [ ] **Best-before disclaimer wording:** confirm advisory "typical / use your judgement" phrasing presented with every estimate (§8.6)
+- [x] **Web framework:** **Inertia + Vue 3** for v1 (decided 2026-06-21, over decoupled Nuxt SSR). (ADR-0004)
+- [x] **Best-before disclaimer wording:** fixed advisory copy confirmed — see spec §6 and the `best-before-is-advisory` indication.
+
+_No open scoping decisions remain — Phase 0 is unblocked._

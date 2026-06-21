@@ -274,8 +274,16 @@ blocks, with results pushed back to the client.
 rules tables, caches). Batch and cache aggressively. For a two-person household the monthly AI
 spend is negligible; the patterns above also keep it cheap at product scale.
 
-**Safety note:** best-before output is an estimate to reduce waste, not a food-safety
-authority — surface it with clear "use your judgement" wording.
+**Safety note (confirmed wording).** Best-before output is an estimate to reduce waste, never a
+food-safety authority. Standard copy:
+
+> **Estimated best-before — use your judgement.** These dates are *our estimate* to help you waste
+> less food; they are **not a food-safety guarantee**. Trust your senses — if something looks,
+> smells, or seems off, throw it out regardless of the date.
+
+Compact form for chips/inline (tight spaces): **"Estimated — use your judgement."** This wording is
+applied wherever a best-before, freeze suggestion, or expiry flag is shown (see the
+`best-before-is-advisory` indication in the project vault).
 
 ---
 
@@ -344,13 +352,12 @@ This is the high-performance shape you asked for, and it scales cleanly if it be
   substitute), **single shared dish on fish nights**; overridable per entry. (§4.4 · ADR-0002)
 - **Servings / scaling** — not modelled in v1; the household portion is fixed. (§4.4)
 - **App name** — **Larder** (branding + high-fidelity UI design done; see `design/`).
+- **Web framework** — **Inertia + Vue 3** (decided 2026-06-21, over a decoupled Nuxt SSR SPA;
+  fastest path to a snappy web client on the same `/api/v1`). (§7 · ADR-0004)
+- **Best-before disclaimer** — fixed advisory wording confirmed; see §6 and the
+  `best-before-is-advisory` indication in the project vault.
 
-**Still open — confirm before build:**
-
-1. **Web framework** — Inertia + Vue (recommended, fastest) vs a decoupled Nuxt SSR SPA. Both
-   consume the same `/api/v1`. (§7 · ADR-0004 is *accepted with this point flagged revisitable*.)
-2. **Best-before disclaimer wording** — confirm estimates are presented as advisory ("typical — use
-   your judgement"), never a food-safety guarantee. (§6)
+_All v1 scoping decisions are now resolved — nothing blocks Phase 0._
 
 ---
 
