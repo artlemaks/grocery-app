@@ -14,7 +14,7 @@ lines below; comments (`#`) are ignored.
      the vault inside the repository; an absolute path like `~/vault/givore` keeps it global.
      Omit vault_path entirely to use the global default `~/vault/<slug>/`. -->
 vault_path: ~/vault/grocery-app
-# framework_path: ~/workspace/vault   # override the global framework install (rarely needed)
+# framework_path: ~/projects/vault   # override the global framework install (rarely needed)
 slug: grocery-app
 
 ## structure

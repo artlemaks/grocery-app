@@ -1,7 +1,7 @@
 # Household Grocery & Meal-Planning App — Scoping Spec
 
-**Status:** Draft v1 · **Date:** 21 June 2026 · **Owner:** Artur
-**Working title:** *(TBD — e.g. "Pantry", "Larder", "MealLoop")*
+**Status:** Draft v2 · **Date:** 21 June 2026 · **Owner:** Artur
+**Working title:** **Larder**
 
 ---
 
@@ -16,8 +16,9 @@ what's left, estimates best-before dates, suggests what to freeze, lets you conf
 stock, and builds the next shopping list around what you already have. AI helps with three
 jobs: capturing recipes from a photo or web link, estimating shelf life / freeze advice, and
 suggesting meals based on what you actually cook and like. A core constraint runs throughout:
-**your wife is vegetarian and you are not**, so every meat ingredient can carry a vegetarian
-substitute, and the app tracks both versions independently.
+**your wife is pescatarian (eats fish, not meat) and you are not**, so every meat ingredient can
+carry a vegetarian substitute for her while fish dishes are shared — and the app tracks both
+versions independently.
 
 ---
 
@@ -190,6 +191,11 @@ Freezing is a status change (`active → frozen`) that **pauses both clocks** an
 effective best-before; thawing later restarts the opened window. Frozen items are offered back
 into future shopping-list generation so you don't re-buy them.
 
+**Depletion order (FIFO by expiry).** When more than one lot of the same ingredient is on hand,
+usage logging and shopping-list subtraction consume the lot with the **earliest
+`effective_best_before` first**, so the oldest stock is used before it spoils. (This keeps the
+multi-pack maths well-defined — e.g. two packs of mince deplete oldest-first.)
+
 ---
 
 ## 5. Feature walkthrough (mapped to your brief)
@@ -328,17 +334,23 @@ This is the high-performance shape you asked for, and it scales cleanly if it be
 
 ---
 
-## 8. Open questions / decisions to confirm
+## 8. Decisions & open questions
 
-1. **Inventory granularity** — fraction-of-pack (recommended), discrete unit count, or real
-   weights? (§4.3) Everything downstream depends on this.
-2. **Per-meal portioning of veg vs non-veg** — do you cook two versions of a dish most nights,
-   or usually one shared veg dish + occasional meat for you? Changes how planning defaults work.
-3. **Servings / scaling** — do you want recipes to scale by servings, or is "household portion"
-   always the same? (Simpler to skip scaling in v1.)
-4. **Web framework preference** — Inertia+Vue (fastest) vs decoupled Nuxt SPA. Either works.
-5. **App name & branding** — needed before any store submission.
-6. **Best-before disclaimer wording** — confirm we present estimates as advisory.
+**Confirmed — now locked** (recorded as ADRs in the project vault, `~/vault/grocery-app/decisions/`):
+
+- **Inventory granularity** — fraction-of-pack remaining (0–1); discrete counts and real weights are
+  out of scope for v1. (§4.3 · ADR-0001)
+- **Per-meal veg/non-veg portioning** — **two versions on meat nights** (Artur = meat, Jolene =
+  substitute), **single shared dish on fish nights**; overridable per entry. (§4.4 · ADR-0002)
+- **Servings / scaling** — not modelled in v1; the household portion is fixed. (§4.4)
+- **App name** — **Larder** (branding + high-fidelity UI design done; see `design/`).
+
+**Still open — confirm before build:**
+
+1. **Web framework** — Inertia + Vue (recommended, fastest) vs a decoupled Nuxt SSR SPA. Both
+   consume the same `/api/v1`. (§7 · ADR-0004 is *accepted with this point flagged revisitable*.)
+2. **Best-before disclaimer wording** — confirm estimates are presented as advisory ("typical — use
+   your judgement"), never a food-safety guarantee. (§6)
 
 ---
 
@@ -381,6 +393,8 @@ Sign-up, household invites, billing, onboarding — flip the multi-tenant switch
 
 ## 11. Suggested next step
 
-Confirm the §8 decisions (especially inventory granularity and the veg/non-veg cooking pattern),
-then I'll produce the Phase 0/1 database migrations and API design, and we start building the
-manual planning loop.
+The core §8 decisions are now locked (inventory granularity, veg/non-veg pattern, name = **Larder**),
+and the work is broken down in **`TASKS.md`** with the load-bearing decisions captured as ADRs in the
+project vault (`~/vault/grocery-app/decisions/`). The next build step is the **Phase 0/1 database
+migrations and API design**, then the manual planning loop. Two items remain to confirm before then:
+the web framework (§8.1) and the best-before disclaimer wording (§8.2).
