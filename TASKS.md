@@ -1,6 +1,6 @@
 # Larder — Engineering Backlog
 
-This is the working backlog for **Larder**, derived from the scoping spec. It is organized by the spec's Phase 0–5 roadmap (§9), grounded in the §4 data model and §5 feature walkthrough. Larder is a private household grocery and meal-planning app built **API-first**: a Laravel API (PHP 8.3) is the single source of truth, with an **Inertia + Vue 3** web client first and a **Compose Multiplatform** Android + iOS mobile client later. A core constraint runs throughout — the household has a mixed diet (omnivore + pescatarian), so excluded-class ingredients carry substitutes and both versions are tracked independently. Phase 1 ships the full manual planning loop with **zero AI**; AI lands in Phase 3.
+This is the working backlog for **Larder**, derived from the scoping spec. It is organized by the spec's Phase 0–5 roadmap (§9), grounded in the §4 data model and §5 feature walkthrough. Larder is a private household grocery and meal-planning app built **API-first**: a Laravel API (PHP 8.4) is the single source of truth, with an **Inertia + Vue 3** web client first and a **Compose Multiplatform** Android + iOS mobile client later. A core constraint runs throughout — the household has a mixed diet (omnivore + pescatarian), so excluded-class ingredients carry substitutes and both versions are tracked independently. Phase 1 ships the full manual planning loop with **zero AI**; AI lands in Phase 3.
 
 Tasks are roughly half-day to two-day units. References point to vault features (recipes, meal-planning, shopping-list, inventory-reconciliation, ai-services) and ADRs (ADR-0001 fraction-of-pack inventory, ADR-0002 diet_class + substitute, ADR-0003 two-clock best-before, ADR-0004 api-first architecture).
 
@@ -8,8 +8,10 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ## Phase 0 — Foundations
 
+> **Status (2026-06-21): core foundations landed** — Laravel 13 / PHP 8.4 scaffold, all 14 §4 migrations (verified green + reversible on Postgres 17), Eloquent models + 8 enums + `BelongsToHousehold` tenancy trait, Sanctum + Horizon installed, household-scoped policies, `/api/v1` (health, me), Dockerized stack, 8 tests green. **Deferred to later:** Octane/FrankenPHP runtime, Pint/PHPStan/CI gate, R2/S3 object storage, login/logout endpoints, deploy pipeline, dev seeder, pg_trgm/full-text (lands with ingredient search in Phase 1). Membership is modelled as `users.household_id` + diet fields on `users` (not a separate `household_member` table) — sufficient for the single two-person household; revisit at Phase 5 productisation.
+
 ### Project skeleton & runtime
-- [ ] Scaffold a Laravel 11 project on PHP 8.3 with a `/api/v1` route group and versioned JSON responses (ADR-0004)
+- [x] Scaffold a Laravel 13 project on PHP 8.4 with a `/api/v1` route group and JSON responses for `api/*` (ADR-0004)
 - [ ] Configure standardized API response envelope, error handling, and JSON validation problem format (ADR-0004)
 - [ ] Add API resource/transformer base classes for consistent serialization (ADR-0004)
 - [ ] Configure Octane/FrankenPHP runtime locally and document the dev bootstrap (ADR-0004)
@@ -17,25 +19,25 @@ Tasks are roughly half-day to two-day units. References point to vault features 
 
 ### Persistence & infrastructure
 - [ ] Provision Postgres connection and enable extensions for full-text search and fuzzy matching (pg_trgm)
-- [ ] Configure Redis for cache and queue drivers
-- [ ] Install and configure Laravel Horizon for queue supervision
+- [x] Configure Redis for cache and queue drivers
+- [x] Install and configure Laravel Horizon for queue supervision
 - [ ] Configure S3-compatible object storage (Cloudflare R2/S3) for recipe images, with a signed-upload flow
 - [ ] Add `.env` template and config for all backing services (Postgres, Redis, R2, mail)
 
 ### Data model migrations (§4, all household_id-scoped)
-- [ ] Create `household` and `household_member` (membership) migrations with diet profile fields (ADR-0002)
-- [ ] Create `ingredient` migration: diet_class, default_unit, default_pack_size, category, substitute_ingredient_id, shelf_life_sealed_days, use_within_after_open_days, requires_open_tracking (ADR-0001, ADR-0002, ADR-0003)
-- [ ] Create `recipe`, `recipe_ingredient`, and `recipe_component` migrations (feat: recipes)
-- [ ] Create `tag` and `recipe_tag` migrations (feat: recipes)
-- [ ] Create `meal_plan` and `meal_plan_entry` migrations (feat: meal-planning)
-- [ ] Create `shopping_list` and `shopping_list_item` migrations (feat: shopping-list)
-- [ ] Create `inventory_item` migration: location, remaining, is_opened, opened_on, sealed_best_before, effective_best_before, status (feat: inventory-reconciliation, ADR-0001, ADR-0003)
-- [ ] Create `usage_log` migration linked to inventory_item and meal_plan_entry (feat: inventory-reconciliation)
-- [ ] Verify every migration is reversible and every FK is indexed
-- [ ] Add Eloquent models with relationships and a `household_id` global scope/trait
+- [x] Create `household` migration + diet profile fields on `users` (membership via `users.household_id`) (ADR-0002)
+- [x] Create `ingredient` migration: diet_class, default_unit, default_pack_size, category, substitute_ingredient_id, shelf_life_sealed_days, use_within_after_open_days, requires_open_tracking (ADR-0001, ADR-0002, ADR-0003)
+- [x] Create `recipe`, `recipe_ingredient`, and `recipe_component` migrations (feat: recipes)
+- [x] Create `tag` and `recipe_tag` migrations (feat: recipes)
+- [x] Create `meal_plan` and `meal_plan_entry` migrations (feat: meal-planning)
+- [x] Create `shopping_list` and `shopping_list_item` migrations (feat: shopping-list)
+- [x] Create `inventory_item` migration: location, remaining, is_opened, opened_on, sealed_best_before, effective_best_before, status (feat: inventory-reconciliation, ADR-0001, ADR-0003)
+- [x] Create `usage_log` migration linked to inventory_item and meal_plan_entry (feat: inventory-reconciliation)
+- [x] Verify every migration is reversible and every FK is indexed
+- [x] Add Eloquent models with relationships and a `household_id` global scope/trait
 
 ### Auth & authorization
-- [ ] Install Laravel Sanctum and configure cookie sessions (web) + token auth (mobile) (ADR-0004)
+- [x] Install Laravel Sanctum and configure cookie sessions (web) + token auth (mobile) (ADR-0004)
 - [ ] Implement login/logout and current-user endpoints
 - [ ] Implement household membership resolution and an `ActsAsHouseholdMember` middleware
 - [ ] Write household-scoped authorization policies for every resource and wire them into controllers
